@@ -1,6 +1,8 @@
 package com.example.austinkincade.roomieslist1;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,9 +14,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    ArrayList<String> shoppingList = null;
+    ArrayAdapter<String> adapter = null;
+    ListView lv = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,16 +36,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        ListView listView = (ListView) findViewById(R.id.listView1);
-        listView.setOnItemClickListener(this);
+        shoppingList = new ArrayList<>();
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, shoppingList);
+        lv = (ListView) findViewById(R.id.listView1);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(this);
+
     }
 
     @Override
@@ -68,5 +77,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Or / And
         intent.putExtra("id", id);
         startActivity(intent);
+    }
+
+    public void addList(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Item");
+        final EditText input = new EditText(this);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                shoppingList.add(input.getText().toString());
+                lv.setAdapter(adapter);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 }
