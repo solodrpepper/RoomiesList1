@@ -9,6 +9,10 @@ public class ShoppingList {
     private String originalCreatorID;
     private String shoppingListName;
 
+    public ShoppingList(String shoppingListName) {
+        this.shoppingListName = shoppingListName;
+    }
+
     public List<ShoppingItem> getShoppingList() {
         return shoppingList;
     }
@@ -44,6 +48,11 @@ public class ShoppingList {
                 iter.remove();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return shoppingListName;
     }
 
 }
