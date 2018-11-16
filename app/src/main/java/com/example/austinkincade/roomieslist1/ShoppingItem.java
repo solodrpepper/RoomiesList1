@@ -8,6 +8,10 @@ public class ShoppingItem {
     private float price;
     private Boolean isChecked;
 
+    public ShoppingItem(String itemName) {
+        this.itemName = itemName;
+    }
+
     public String getItemName() {
         return itemName;
     }
@@ -32,4 +36,8 @@ public class ShoppingItem {
         isChecked = checked;
     }
 
+    @Override
+    public String toString() {
+        return itemName;
+    }
 }

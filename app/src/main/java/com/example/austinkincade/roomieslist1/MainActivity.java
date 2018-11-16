@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final String TAG = MainActivity.class.getSimpleName();
     ArrayList<ShoppingList> shoppingListList = null;
-    ArrayAdapter<ShoppingList> adapter = null;
+    ArrayAdapter<ShoppingList>  adapter = null;
     ListView lv = null;
 
     @Override
