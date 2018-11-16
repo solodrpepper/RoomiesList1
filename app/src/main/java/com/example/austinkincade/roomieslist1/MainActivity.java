@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -73,18 +75,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("position", position);
         // Or / And
         intent.putExtra("id", id);
+        //intent.putExtra("Shopping List", shopping )
         startActivity(intent);
     }
 
     public void addList(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add List");
+        builder.setTitle("Add List"); //Text saying to the user what to do
         final EditText input = new EditText(this);
         builder.setView(input);
+        //adding a OK button to the pop up window to add an item
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String listName = input.getText().toString();
+                //adds a shopping list to an Array of Lists
                 shoppingListList.add(new ShoppingList(listName));
                 lv.setAdapter(adapter);
                 Log.d(TAG,input.getText().toString());

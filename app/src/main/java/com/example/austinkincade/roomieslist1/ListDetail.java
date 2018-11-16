@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class ListDetail extends AppCompatActivity {
 
-    ArrayList<ShoppingItem> shoppingList = null;
+    ArrayList <ShoppingItem> shoppingList = null;
     ArrayAdapter<ShoppingItem> adapter = null;
     ListView lv = null;
 

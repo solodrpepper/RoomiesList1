@@ -35,9 +35,9 @@ public class ShoppingItem {
     public void setChecked(Boolean checked) {
         isChecked = checked;
     }
-
     @Override
     public String toString() {
         return itemName;
     }
 }
+

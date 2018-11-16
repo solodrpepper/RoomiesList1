@@ -9,6 +9,12 @@ public class ShoppingList {
     private String originalCreatorID;
     private String shoppingListName;
 
+    public ShoppingList(){
+        shoppingList = null;
+        originalCreatorID = null;
+        shoppingListName = null;
+    }
+
     public ShoppingList(String shoppingListName) {
         this.shoppingListName = shoppingListName;
     }
