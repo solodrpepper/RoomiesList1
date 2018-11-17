@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ListDetail"
+            android:name=".ListDetailActivity"
             android:parentActivityName=".MainActivity"
             android:label="List Detail"
             android:theme="@style/AppTheme.NoActionBar">

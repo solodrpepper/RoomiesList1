@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ListDetail extends AppCompatActivity {
+public class ListDetailActivity extends AppCompatActivity {
 
     ArrayList <ShoppingItem> shoppingList = null;
     ArrayAdapter<ShoppingItem> adapter = null;

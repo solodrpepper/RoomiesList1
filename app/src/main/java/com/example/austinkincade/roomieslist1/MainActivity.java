@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.i("HelloListView", "You clicked List: " + id + " at position:" + position);
         // Then you start a new Activity via Intent
         Intent intent = new Intent();
-        intent.setClass(this, ListDetail.class);
+        intent.setClass(this, ListDetailActivity.class);
         intent.putExtra("position", position);
         // Or / And
         intent.putExtra("id", id);
