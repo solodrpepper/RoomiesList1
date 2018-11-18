@@ -3,10 +3,15 @@ package com.example.austinkincade.roomieslist1;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -15,91 +20,186 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.austinkincade.roomieslist1.models.ShoppingListModel;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity {
+    private String userEmail, userName;
+    private GoogleApiClient googleApiClient;
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    ArrayList<ShoppingList> shoppingListList = null;
-    ArrayAdapter<ShoppingList>  adapter = null;
-    ListView lv = null;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore rootRef;
+    private FirebaseAuth.AuthStateListener authStateListener;
+
+    private CollectionReference userShoppingListRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (googleSignInAccount != null) {
+            userEmail = googleSignInAccount.getEmail();
+            userName = googleSignInAccount.getDisplayName();
+            Toast.makeText(this, "Welcome to Roomies' List " + userName + "!", Toast.LENGTH_LONG)
+                .show();
+        }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
-        shoppingListList = new ArrayList<>();
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, shoppingListList);
-        lv = (ListView) findViewById(R.id.listView1);
-        lv.setAdapter(adapter);
-        lv.setOnItemClickListener(this);
+        firebaseAuth = FirebaseAuth.getInstance();
+        rootRef = FirebaseFirestore.getInstance();
 
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser == null) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        };
+
+        // Defining the FAB
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Create a New Shopping List!");
+
+                final EditText editText = new EditText(MainActivity.this);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                editText.setHint("Where are you shopping at?");
+                editText.setHintTextColor(Color.GRAY);
+
+                builder.setView(editText);
+                builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String shoppingListName = editText.getText().toString().trim();
+                        addShoppingList(shoppingListName);
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+
+        // creating a reference to the users shopping lists
+        userShoppingListRef = rootRef.collection("shoppingLists").document(userEmail).collection("userShoppingLists");
+
+        // creating the recycler view, text view for empty page, and the progress bar
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TextView emptyView = findViewById(R.id.empty_view);
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+
+        // create a query to populate the recycler view with the user's lists
+        Query query = userShoppingListRef.orderBy("shoppingListName", Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<ShoppingListModel> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<ShoppingListModel>()
+                .setQuery(query, ShoppingListModel.class)
+                .build();
+
+    }
+
+    /********************************************************
+     * ADD SHOPPING LIST
+     *
+     * This method will add a shopping list to the firebase
+     * user.
+     */
+
+    private void addShoppingList(String shoppingListName) {
+        String shoppingListId = userShoppingListRef.document().getId();
+
+        ShoppingListModel shoppingListModel = new ShoppingListModel(shoppingListId, shoppingListName, userName);
+        userShoppingListRef.document(shoppingListId).set(shoppingListModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "Successfully created a new Shopping List!");
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                signOut();
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                default:
+                    return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i("HelloListView", "You clicked List: " + id + " at position:" + position);
-        // Then you start a new Activity via Intent
-        Intent intent = new Intent();
-        intent.setClass(this, ListDetailActivity.class);
-        intent.putExtra("position", position);
-        // Or / And
-        intent.putExtra("id", id);
-        //intent.putExtra("Shopping List", shopping )
-        startActivity(intent);
-    }
+    private void signOut() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("tokenId", FieldValue.delete());
 
-    public void addList(View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add List"); //Text saying to the user what to do
-        final EditText input = new EditText(this);
-        builder.setView(input);
-        //adding a OK button to the pop up window to add an item
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        rootRef.collection("users").document(userEmail).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String listName = input.getText().toString();
-                //adds a shopping list to an Array of Lists
-                shoppingListList.add(new ShoppingList(listName));
-                lv.setAdapter(adapter);
-                Log.d(TAG,input.getText().toString());
+            public void onSuccess(Void aVoid) {
+                firebaseAuth.signOut();
+
+                if (googleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(googleApiClient);
+                }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
     }
 }
