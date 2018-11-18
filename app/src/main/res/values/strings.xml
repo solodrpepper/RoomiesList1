@@ -6,5 +6,11 @@
     <string name="facebook_title_text">Facebook Login</string>
     <string name="sign_out">Sign Out</string>
     <string name="signed_out">Signed Out</string>
+
+    <string name="label_facebook_login">Firebase + Facebook Login</string>
+    <string name="facebook_status_fmt">Facebook User: %s</string>
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="loading">Loading…</string>
+
     <string name="facebook_app_id">569895370192970</string>
 </resources>
