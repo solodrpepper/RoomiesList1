@@ -13,9 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -24,7 +26,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.austinkincade.roomieslist1.holders.ShoppingListViewHolder;
 import com.example.austinkincade.roomieslist1.models.ShoppingListModel;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
 
     private CollectionReference userShoppingListRef;
+
+    FirestoreRecyclerAdapter<ShoppingListModel, ShoppingListViewHolder> firestoreRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +127,10 @@ public class MainActivity extends AppCompatActivity {
         userShoppingListRef = rootRef.collection("shoppingLists").document(userEmail).collection("userShoppingLists");
 
         // creating the recycler view, text view for empty page, and the progress bar
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        TextView emptyView = findViewById(R.id.empty_view);
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        final TextView emptyView = findViewById(R.id.empty_view);
+        final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
         // create a query to populate the recycler view with the user's lists
         Query query = userShoppingListRef.orderBy("shoppingListName", Query.Direction.ASCENDING);
@@ -132,6 +138,42 @@ public class MainActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<ShoppingListModel> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<ShoppingListModel>()
                 .setQuery(query, ShoppingListModel.class)
                 .build();
+
+        firestoreRecyclerAdapter =
+                new FirestoreRecyclerAdapter<ShoppingListModel, ShoppingListViewHolder>(firestoreRecyclerOptions) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull ShoppingListViewHolder holder, int position, @NonNull ShoppingListModel model) {
+                        holder.setShoppingList(getApplicationContext(), model);
+                    }
+
+                    @NonNull
+                    @Override
+                    public ShoppingListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_shopping_list, viewGroup, false);
+                        return new ShoppingListViewHolder(view);
+                    }
+
+                    @Override
+                    public void onDataChanged() {
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        if (getItemCount() == 0) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                        } else {
+                            recyclerView.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public int getItemCount() {
+                        return super.getItemCount();
+                    }
+                };
+        recyclerView.setAdapter(firestoreRecyclerAdapter);
 
     }
 
@@ -159,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         googleApiClient.connect();
         firebaseAuth.addAuthStateListener(authStateListener);
+        firestoreRecyclerAdapter.startListening();
     }
 
     @Override
@@ -166,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (googleApiClient.isConnected()) {
             googleApiClient.disconnect();
+        }
+
+        if (firestoreRecyclerAdapter != null) {
+            firestoreRecyclerAdapter.stopListening();
         }
     }
 
