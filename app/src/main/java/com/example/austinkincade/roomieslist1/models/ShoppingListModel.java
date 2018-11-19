@@ -2,9 +2,10 @@ package com.example.austinkincade.roomieslist1.models;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ShoppingListModel {
+public class ShoppingListModel implements Serializable {
     private String shoppingListId, shoppingListName, createdBy;
     @ServerTimestamp
     private Date date;

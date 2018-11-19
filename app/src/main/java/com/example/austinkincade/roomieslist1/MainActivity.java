@@ -1,6 +1,7 @@
 package com.example.austinkincade.roomieslist1;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -51,18 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
     private CollectionReference userShoppingListRef;
 
+    private Context context;
+
     FirestoreRecyclerAdapter<ShoppingListModel, ShoppingListViewHolder> firestoreRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
 
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if (googleSignInAccount != null) {
             userEmail = googleSignInAccount.getEmail();
             userName = googleSignInAccount.getDisplayName();
-            Toast.makeText(this, "Welcome to Roomies' List " + userName + "!", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Welcome to Roomies' List, " + userName + "!", Toast.LENGTH_LONG)
                 .show();
         }
 
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 new FirestoreRecyclerAdapter<ShoppingListModel, ShoppingListViewHolder>(firestoreRecyclerOptions) {
                     @Override
                     protected void onBindViewHolder(@NonNull ShoppingListViewHolder holder, int position, @NonNull ShoppingListModel model) {
-                        holder.setShoppingList(getApplicationContext(), model);
+                        holder.setShoppingList(context, userEmail, model);
                     }
 
                     @NonNull
@@ -197,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         googleApiClient.connect();
         firebaseAuth.addAuthStateListener(authStateListener);
         firestoreRecyclerAdapter.startListening();
+        Log.i("TAG_MAIN", "We connected to Firebase in onStart");
     }
 
     @Override
