@@ -8,4 +8,6 @@
     <string name="signed_out">Signed Out</string>
     <string name="facebook_app_id">569895370192970</string>
     <string name="add_friend">Add Friend</string>
+    <string name="no_lists">You don\'t have any lists yet!</string>
+    <string name="no_products">You don\'t have any items yet!</string>
 </resources>

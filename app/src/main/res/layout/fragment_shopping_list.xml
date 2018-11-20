@@ -6,25 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ShoppingListFragment">
 
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/recycler_view"/>-->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view"/>
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/empty_view"-->
-        <!--android:gravity="center"-->
-        <!--android:text="You don't have any lists yet!"-->
-        <!--android:visibility="gone"/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/empty_view"
+        android:gravity="center"
+        android:text="@string/no_products"
+        android:visibility="gone"/>
 
-    <!--<ProgressBar-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/progress_bar"-->
-        <!--android:layout_gravity="center"-->
-        <!--style="@style/Widget.AppCompat.ProgressBar"/>-->
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar"
+        android:layout_gravity="center"
+        style="@style/Widget.AppCompat.ProgressBar"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
