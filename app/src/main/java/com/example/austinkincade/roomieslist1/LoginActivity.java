@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.d("TAG", "Sorry, we weren't able to connect");
+                        Log.e("TAG", "Sorry, we weren't able to connect");
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
@@ -91,7 +91,9 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (googleSignInResult.isSuccess()) {
                 GoogleSignInAccount googleSignInAccount = googleSignInResult.getSignInAccount();
-                firebaseSignInWithGoogle(googleSignInAccount);
+                if (googleSignInAccount != null) {
+                    firebaseSignInWithGoogle(googleSignInAccount);
+                }
                 //createUserIfNotExists(googleSignInAccount);
             } else {
                 Log.d("TAG", "Failed to log in user");
@@ -110,14 +112,16 @@ public class LoginActivity extends AppCompatActivity {
                     String tokenId = FirebaseInstanceId.getInstance().getToken();
 
                     UserModel userModel = new UserModel(userEmail, userName, tokenId);
-                    rootRef.collection("users").document(userEmail).set(userModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("TAG", "User successfully created!");
-                        }
-                    });
+                    if (userEmail != null) {
+                        rootRef.collection("users").document(userEmail).set(userModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.i("TAG", "User successfully created!");
+                            }
+                        });
+                    }
                 } else {
-                    Log.d("TAG", "Failed with: " + task.getException());
+                    Log.e("TAG", "Failed with: " + task.getException());
                 }
             }
         });
