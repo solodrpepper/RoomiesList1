@@ -5,14 +5,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.example.austinkincade.roomieslist1.fragments.HistoryFragment;
+import com.example.austinkincade.roomieslist1.fragments.ShoppingListFragment;
 import com.example.austinkincade.roomieslist1.models.ShoppingListModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,7 +33,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShoppingListActivity extends AppCompatActivity {
@@ -73,6 +84,12 @@ public class ShoppingListActivity extends AppCompatActivity {
         // go grab the shopping list ID from the model
         shoppingListId = shoppingListModel.getShoppingListId();
 
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        setupViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(2);
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void signOut() {
@@ -164,5 +181,62 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> titleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return fragmentList.get(i);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titleList.get(position);
+        }
+
+        void addFragment (Fragment fragment, String title) {
+            fragmentList.add(fragment);
+            titleList.add(title);
+        }
+    }
+
+    public ShoppingListModel getShoppingListModel() { return shoppingListModel; }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        // This is for the Shopping list fragment
+        ShoppingListFragment trueFragment = new ShoppingListFragment();
+        Bundle trueBundle = new Bundle();
+        trueBundle.putBoolean("izInShoppingList", true);
+        trueFragment.setArguments(trueBundle);
+
+        viewPagerAdapter.addFragment(trueFragment, "SHOPPING LIST");
+
+        // this is for the product fragment
+        ShoppingListFragment falseFragment = new ShoppingListFragment();
+        Bundle falseBundle = new Bundle();
+        falseBundle.putBoolean("izInShoppingList", false);
+        falseFragment.setArguments(falseBundle);
+
+        viewPagerAdapter.addFragment(falseFragment, "PRODUCT LIST");
+
+        // the is for the history fragment
+        viewPagerAdapter.addFragment(new HistoryFragment(), "HISTORY");
+
+        viewPager.setAdapter(viewPagerAdapter);
     }
 }
