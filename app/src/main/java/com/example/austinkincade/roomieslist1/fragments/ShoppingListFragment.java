@@ -50,7 +50,7 @@ public class ShoppingListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View shoppingListViewFragment = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        final View shoppingListViewFragment = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         Bundle bundle = getArguments();
         izInShoppingList = bundle.getBoolean("izInShoppingList");
 
@@ -123,7 +123,7 @@ public class ShoppingListFragment extends Fragment {
                 new FirestoreRecyclerAdapter<ProductModel, ProductViewHolder>(firestoreRecyclerOptions) {
                     @Override
                     protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull ProductModel model) {
-                        holder.setProduct(getContext(), userEmail, shoppingListModel,model);
+                        holder.setProduct(getContext(), shoppingListViewFragment, userEmail, shoppingListModel,model);
                     }
 
                     @NonNull
