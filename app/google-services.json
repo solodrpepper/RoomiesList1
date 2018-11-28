@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "1049404978155-7lp29ibvkop6phdtiq6ngvb3r3jedg8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.austinkincade.roomieslist1",
+            "certificate_hash": "e3f3b9b0e47b301ae17b4eff97f90baff227893e"
+          }
+        },
+        {
           "client_id": "1049404978155-kfv7u8fkr7h7f77bhdvmaqkvs63e5igg.apps.googleusercontent.com",
           "client_type": 3
         }
