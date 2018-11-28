@@ -164,11 +164,31 @@ public class ShoppingListActivity extends AppCompatActivity {
         builder.setPositiveButton("Share", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String friendEmail = editText.getText().toString().trim();
+                final String friendEmail = editText.getText().toString().trim();
                 // copy over the list to the friend's collection
                 rootRef.collection("shoppingLists").document(friendEmail)
                         .collection("userShoppingLists").document(shoppingListId)
-                        .set(shoppingListModel);
+                        .set(shoppingListModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Map<String, Object> users = new HashMap<>();
+                        Map<String, Object> map   = new HashMap<>();
+
+                        map.put(userEmail, true);
+                        map.put(friendEmail, true);
+
+                        users.put("users", map);
+
+                        // update the user
+                        rootRef.collection("shoppingLists").document(userEmail)
+                                .collection("userShoppingLists").document(shoppingListId)
+                                .update(users);
+                        // update friend too
+                        rootRef.collection("shoppingLists").document(friendEmail)
+                                .collection("userShoppingLists").document(shoppingListId)
+                                .update(users);
+                    }
+                });
             }
         });
 

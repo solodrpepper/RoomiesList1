@@ -42,7 +42,7 @@ public class ShoppingListFragment extends Fragment {
     private FirebaseFirestore rootRef;
     private CollectionReference shoppingListProductsRef;
     private Boolean izInShoppingList;
-    private String userEmail;
+    private String userEmail, userName;
     private GoogleApiClient googleApiClient;
     FirestoreRecyclerAdapter<ProductModel, ProductViewHolder> firestoreRecyclerAdapter;
 
@@ -57,6 +57,7 @@ public class ShoppingListFragment extends Fragment {
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
         if (googleSignInAccount != null) {
             userEmail = googleSignInAccount.getEmail();
+            userName  = googleSignInAccount.getDisplayName();
         }
 
         googleApiClient = new GoogleApiClient.Builder(getContext())
@@ -123,7 +124,7 @@ public class ShoppingListFragment extends Fragment {
                 new FirestoreRecyclerAdapter<ProductModel, ProductViewHolder>(firestoreRecyclerOptions) {
                     @Override
                     protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull ProductModel model) {
-                        holder.setProduct(getContext(), shoppingListViewFragment, userEmail, shoppingListModel,model);
+                        holder.setProduct(getContext(), shoppingListViewFragment, userEmail, userName, shoppingListModel,model);
                     }
 
                     @NonNull

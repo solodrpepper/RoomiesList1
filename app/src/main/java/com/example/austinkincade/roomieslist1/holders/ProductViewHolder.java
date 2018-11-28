@@ -13,10 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.austinkincade.roomieslist1.R;
+import com.example.austinkincade.roomieslist1.models.NotificationModel;
 import com.example.austinkincade.roomieslist1.models.ProductModel;
 import com.example.austinkincade.roomieslist1.models.ShoppingListModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -31,7 +35,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         productNameTextView = itemView.findViewById(R.id.product_name_text_view);
     }
 
-    public void setProduct(final Context context, final View shoppingListViewFragment, final String userEmail, final ShoppingListModel shoppingListModel, ProductModel productModel) {
+    public void setProduct(final Context context, final View shoppingListViewFragment, final String userEmail, final String userName, final ShoppingListModel shoppingListModel, ProductModel productModel) {
         final String shoppingListName = shoppingListModel.getShoppingListName();
         final String shoppingListId   = shoppingListModel.getShoppingListId();
         final String productId = productModel.getProductId();
@@ -39,7 +43,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         final Boolean izInShoppingList = productModel.getIzInShoppingList();
         productNameTextView.setText(productName);
 
-        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference productIdRef = rootRef.collection("products").document(shoppingListId)
                 .collection("shoppingListProducts").document(productId);
 
@@ -58,7 +62,29 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onSuccess(Void aVoid) {
                         if (izInShoppingList) {
-                            // Send notification
+                            rootRef.collection("shoppingLists").document(userEmail)
+                                    .collection("userShoppingLists").document(shoppingListId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    Map<String, Object> map1 = (Map<String, Object>) task.getResult().get("users");
+                                    String notificationMessage = userName + " just bought " + productName + " from " +
+                                            shoppingListName + "'s list!";
+
+                                    NotificationModel notification = new NotificationModel(notificationMessage, userEmail);
+
+                                    // loop through all the people the list is shared to
+                                    for (Map.Entry<String, Object> entry : map1.entrySet()) {
+                                        String sharedUserEmail = entry.getKey();
+
+                                        // don't want to send a notification to ourselves!
+                                        if (!sharedUserEmail.equals(userEmail)) {
+                                            rootRef.collection("notifications").document(sharedUserEmail)
+                                                    .collection("userNotifications").document()
+                                                    .set(notification);
+                                        }
+                                    }
+                                }
+                            });
                         }
                     }
                 });

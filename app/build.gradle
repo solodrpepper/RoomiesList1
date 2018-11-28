@@ -30,9 +30,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    // Firebase Authentication
+    // Firebase Authentication and Messaging
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     // Facebook Android SDK (only required for Facebook Login)
     // Used in FacebookLoginActivity.
@@ -51,5 +52,4 @@ dependencies {
     // FirebaseUI
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
-    implementation 'com.google.firebase:firebase-auth:16.0.1'
 }
