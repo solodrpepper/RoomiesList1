@@ -38,13 +38,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// import statements
+
+/**
+ * @version     1.0                 (current version number of program)
+ * @since       1.0         (the version of the package this class was first added to)
+ */
+
 public class ShoppingListActivity extends AppCompatActivity {
+
     private String userEmail;
+
+    /**
+     * The main entry point for Google Play services integration.
+     */
     private GoogleApiClient googleApiClient;
+
+    /**
+     * The entry point of the Firebase Authentication SDK.
+     */
     private FirebaseAuth firebaseAuth;
+
+    /**
+     * Represents a Firestore Database and is the entry point for all Firestore operations
+     */
     private FirebaseFirestore rootRef;
+
+    /**
+     * Listener called when there is a change in the authentication state (logging in or out).
+     */
     private FirebaseAuth.AuthStateListener authStateListener;
+
+    /**
+     * The basic list class model.
+     */
     private ShoppingListModel shoppingListModel;
+
+    /**
+     * The id set to the list that Firebase assigns it when created.
+     */
     private String shoppingListId;
 
     @Override
@@ -92,6 +124,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    /**
+     * This is the process of signing someone out of the app.
+     */
     private void signOut() {
         Map<String, Object> map = new HashMap<>();
         map.put("tokenId", FieldValue.delete());
@@ -108,6 +143,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Connects the signed in user to Firebase.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -115,6 +153,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         firebaseAuth.addAuthStateListener(authStateListener);
     }
 
+    /**
+     * Disconnects the signed out user from Firebase.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -123,12 +164,24 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loading the custom menu bar.
+     *
+     * @param  menu Description pull-down menu from the menu bar.          (3)
+     * @return Description true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.shopping_list_menu, menu);
         return true;
     }
 
+    /**
+     * Selecting the items menu bar, and giving the items functionality.
+     *
+     * @param item Description item in a menu from the menu bar.          (3)
+     * @return Description true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -150,6 +203,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The ability for the user to share the shopping list from the menu bar.
+     */
     private void shareShoppingList() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingListActivity.this);
         builder.setTitle("Share your List!");
@@ -203,6 +259,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /**
+     * Makes it possible for the user to be able to see all of the lists and items in an orderly fashion.
+     */
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> titleList = new ArrayList<>();
@@ -233,8 +292,15 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * A base instantiation of a shopping list.
+     */
     public ShoppingListModel getShoppingListModel() { return shoppingListModel; }
 
+    /**
+     * Fills in the data of the layout of the lists.
+     * @param viewPager Description manager that allows the user to flip back and forth between pages of data.
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
