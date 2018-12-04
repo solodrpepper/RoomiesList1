@@ -167,7 +167,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     /**
      * Loading the custom menu bar.
      *
-     * @param  menu Description pull-down menu from the menu bar.          (3)
+     * @param  menu Description pull-down menu from the menu bar.
      * @return Description true.
      */
     @Override
@@ -179,7 +179,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     /**
      * Selecting the items menu bar, and giving the items functionality.
      *
-     * @param item Description item in a menu from the menu bar.          (3)
+     * @param item Description item in a menu from the menu bar.
      * @return Description true.
      */
     @Override
