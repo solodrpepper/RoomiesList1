@@ -24,17 +24,47 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * @version     1.0         (current version number of program)
+ * @since       1.0         (the version of the package this class was first added to)
+ */
 public class ShoppingListViewHolder extends RecyclerView.ViewHolder {
-    private TextView shoppingListNameTextView, createdByTextView, dateTextView;
 
+    /**
+     * The name of the Shopping List.
+     */
+    private TextView shoppingListNameTextView;
+
+    /**
+     * Who the list was created by.
+     */
+    private TextView createdByTextView;
+
+    /**
+     * When the date was created.
+     */
+    private TextView dateTextView;
+
+    /**
+     * Connects the text view objects to the layout.
+     *
+     * @param  itemView Description represents a view of the text model, or a piece of the text model.
+     */
     public ShoppingListViewHolder(@NonNull View itemView) {
         super(itemView);
-        // connect the text view objects to the layout
+
         shoppingListNameTextView = itemView.findViewById(R.id.shopping_list_name_text_view);
         createdByTextView = itemView.findViewById(R.id.created_by_text_view);
         dateTextView = itemView.findViewById(R.id.date_text_view);
     }
 
+    /**
+     * Sets up the data in the tab for each list so that the user is aware of whos list it is and when it was created.
+     *
+     * @param  context Description represents a view of the text model, or a piece of the text model.
+     * @param  userEmail Description what the user's email is.
+     * @param  shoppingListModel Description a basic shopping list object.
+     */
     public void setShoppingList(final Context context, final String userEmail, final ShoppingListModel shoppingListModel) {
         final String shoppingListName = shoppingListModel.getShoppingListName();
         final String shoppingListId   = shoppingListModel.getShoppingListId();

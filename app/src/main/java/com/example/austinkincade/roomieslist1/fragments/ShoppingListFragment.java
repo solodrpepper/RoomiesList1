@@ -37,13 +37,36 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+/**
+ * @version     1.0                 (current version number of program)
+ * @since       1.0         (the version of the package this class was first added to)
+ */
 public class ShoppingListFragment extends Fragment {
+
     private String shoppingListId;
+
+    /**
+     * Represents a Firestore Database and is the entry point for all Firestore operations.
+     */
     private FirebaseFirestore rootRef;
+
+    /**
+     * Represents a Firestore location in the Database.
+     */
     private CollectionReference shoppingListProductsRef;
+
+    /**
+     * Wether it goes in the shopping list or product list.
+     */
     private Boolean izInShoppingList;
+
     private String userEmail, userName;
+
+    /**
+     * The main entry point for Google Play services integration.
+     */
     private GoogleApiClient googleApiClient;
+
     FirestoreRecyclerAdapter<ProductModel, ProductViewHolder> firestoreRecyclerAdapter;
 
 
@@ -159,12 +182,20 @@ public class ShoppingListFragment extends Fragment {
         return shoppingListViewFragment;
     }
 
+    /**
+     * Adds the item to the shopping list.
+     *
+     * @param  productName Description the name of the item.
+     */
     private void addProduct(String productName) {
         String productId = shoppingListProductsRef.document().getId();
         ProductModel productModel = new ProductModel(productId, productName, izInShoppingList);
         shoppingListProductsRef.document(productId).set(productModel);
     }
 
+    /**
+     * Connects the signed in user to Firebase.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -172,6 +203,9 @@ public class ShoppingListFragment extends Fragment {
         firestoreRecyclerAdapter.startListening();
     }
 
+    /**
+     * Disconnects the signed out user from Firebase.
+     */
     @Override
     public void onStop() {
         super.onStop();
