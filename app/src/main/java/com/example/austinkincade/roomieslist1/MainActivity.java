@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will add a shopping list to the firebase user.
      *
-     * @param shoppingListName Description item in a menu from the menu bar.
+     * @param shoppingListName Name of the shopping list.
      */
     private void addShoppingList(String shoppingListName) {
         String shoppingListId = userShoppingListRef.document().getId();
