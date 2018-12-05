@@ -26,6 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * To display products in shopping lists.
+ *
+ * @version     1.0     (current version number of program)
+ * @since       1.0     (the version of the package this class was first added to)
+ */
 public class ProductViewHolder extends RecyclerView.ViewHolder {
     private TextView productNameTextView;
 
@@ -36,8 +42,12 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setProduct(final Context context, final View shoppingListViewFragment, final String userEmail, final String userName, final ShoppingListModel shoppingListModel, ProductModel productModel) {
-        final String shoppingListName = shoppingListModel.getShoppingListName();
+        /**
+         *  To make an actual update into the database.
+         */
         final String shoppingListId   = shoppingListModel.getShoppingListId();
+
+        final String shoppingListName = shoppingListModel.getShoppingListName();
         final String productId = productModel.getProductId();
         final String productName      = productModel.getProductName();
         final Boolean izInShoppingList = productModel.getIzInShoppingList();
@@ -47,6 +57,9 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         final DocumentReference productIdRef = rootRef.collection("products").document(shoppingListId)
                 .collection("shoppingListProducts").document(productId);
 
+        /**
+         *  To open a new activity every time we use a click on a particular shopping list.
+         */
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +104,9 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+        /**
+         *  To update a shopping list.
+         */
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
