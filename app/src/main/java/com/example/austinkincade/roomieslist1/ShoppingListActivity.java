@@ -318,10 +318,10 @@ public class ShoppingListActivity extends AppCompatActivity {
         falseBundle.putBoolean("izInShoppingList", false);
         falseFragment.setArguments(falseBundle);
 
-        viewPagerAdapter.addFragment(falseFragment, "PRODUCT LIST");
+        viewPagerAdapter.addFragment(falseFragment, "IN CART");
 
         // the is for the history fragment
-        viewPagerAdapter.addFragment(new HistoryFragment(), "HISTORY");
+        viewPagerAdapter.addFragment(new HistoryFragment(), "BOUGHT");
 
         viewPager.setAdapter(viewPagerAdapter);
     }
