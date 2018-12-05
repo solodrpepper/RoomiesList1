@@ -27,10 +27,24 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+/**
+ * To implement google authentication
+ *
+ * @version     1.0     (current version number of program)
+ * @since       1.0     (the version of the package this class was first added to)
+ */
 public class LoginActivity extends AppCompatActivity {
+    /**
+     * To create an intent inside the onlick method.
+     */
     private static final int RC_SIGN_IN = 234;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore rootRef;
+
+    /**
+     * To check the state of auth indication.
+     */
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
@@ -65,6 +79,9 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseFirestore.getInstance();
 
+        /**
+         * To check the existence of the Firebase users.
+         */
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -78,12 +95,18 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * This is the place where it adds the listener.
+     */
     @Override
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
     }
 
+    /**
+     * To sign in to Firebase.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
