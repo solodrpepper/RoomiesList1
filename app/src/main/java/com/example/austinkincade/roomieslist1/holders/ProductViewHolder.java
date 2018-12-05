@@ -66,23 +66,23 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
                                     .collection("userShoppingLists").document(shoppingListId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    Map<String, Object> map1 = (Map<String, Object>) task.getResult().get("users");
-                                    String notificationMessage = userName + " just bought " + productName + " from " +
-                                            shoppingListName + "'s list!";
-
-                                    NotificationModel notification = new NotificationModel(notificationMessage, userEmail);
-
-                                    // loop through all the people the list is shared to
-                                    for (Map.Entry<String, Object> entry : map1.entrySet()) {
-                                        String sharedUserEmail = entry.getKey();
-
-                                        // don't want to send a notification to ourselves!
-                                        if (!sharedUserEmail.equals(userEmail)) {
-                                            rootRef.collection("notifications").document(sharedUserEmail)
-                                                    .collection("userNotifications").document()
-                                                    .set(notification);
-                                        }
-                                    }
+//                                    Map<String, Object> map1 = (Map<String, Object>) task.getResult().get("users");
+//                                    String notificationMessage = userName + " just bought " + productName + " from " +
+//                                            shoppingListName + "'s list!";
+//
+//                                    NotificationModel notification = new NotificationModel(notificationMessage, userEmail);
+//
+//                                    // loop through all the people the list is shared to
+//                                    for (Map.Entry<String, Object> entry : map1.entrySet()) {
+//                                        String sharedUserEmail = entry.getKey();
+//
+//                                        // don't want to send a notification to ourselves!
+//                                        if (!sharedUserEmail.equals(userEmail)) {
+//                                            rootRef.collection("notifications").document(sharedUserEmail)
+//                                                    .collection("userNotifications").document()
+//                                                    .set(notification);
+//                                        }
+//                                    }
                                 }
                             });
                         }

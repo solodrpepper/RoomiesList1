@@ -42,18 +42,47 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * @version     1.0                 (current version number of program)
+ * @since       1.0         (the version of the package this class was first added to)
+ */
 public class MainActivity extends AppCompatActivity {
     private String userEmail, userName;
+
+    /**
+     * The main entry point for Google Play services integration.
+     */
     private GoogleApiClient googleApiClient;
 
+    /**
+     * The entry point of the Firebase Authentication SDK.
+     */
     private FirebaseAuth firebaseAuth;
+
+    /**
+     * Represents a Firestore Database and is the entry point for all Firestore operations
+     */
     private FirebaseFirestore rootRef;
+
+    /**
+     * Listener called when there is a change in the authentication state (logging in or out).
+     */
     private FirebaseAuth.AuthStateListener authStateListener;
 
+    /**
+     * Variable to hold our collection reference
+     */
     private CollectionReference userShoppingListRef;
 
+    /**
+     * Create a context variable
+     */
     private Context context;
 
+    /**
+     * Adapter for our recycler view
+     */
     FirestoreRecyclerAdapter<ShoppingListModel, ShoppingListViewHolder> firestoreRecyclerAdapter;
 
     @Override
@@ -176,13 +205,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /********************************************************
-     * ADD SHOPPING LIST
+    /**
+     * This method will add a shopping list to the firebase user.
      *
-     * This method will add a shopping list to the firebase
-     * user.
+     * @param shoppingListName Name of the shopping list.
      */
-
     private void addShoppingList(String shoppingListName) {
         String shoppingListId = userShoppingListRef.document().getId();
 
@@ -195,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Connects the signed in user to Firebase.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -204,6 +234,9 @@ public class MainActivity extends AppCompatActivity {
         Log.i("TAG_MAIN", "We connected to Firebase in onStart");
     }
 
+    /**
+     * Disconnects the signed out user from Firebase.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -216,12 +249,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loading the custom menu bar.
+     *
+     * @param  menu Description pull-down menu from the menu bar.
+     * @return Description true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    /**
+     * Selecting the items menu bar, and giving the items functionality.
+     *
+     * @param item Description item in a menu from the menu bar.
+     * @return Description true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -234,6 +279,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is the process of signing someone out of the app.
+     */
     private void signOut() {
         Map<String, Object> map = new HashMap<>();
         map.put("tokenId", FieldValue.delete());
