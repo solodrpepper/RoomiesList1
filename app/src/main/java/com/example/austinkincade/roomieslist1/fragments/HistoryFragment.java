@@ -8,6 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * Class meant to define the history section of the app
+ *
+ * @version     1.0     (current version number of program)
+ * @since       1.0     (the version of the package this class was first added to)
+ */
 public class HistoryFragment extends Fragment {
     @Nullable
     @Override
