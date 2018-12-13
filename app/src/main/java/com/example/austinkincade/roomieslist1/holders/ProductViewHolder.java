@@ -42,11 +42,8 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setProduct(final Context context, final View shoppingListViewFragment, final String userEmail, final String userName, final ShoppingListModel shoppingListModel, ProductModel productModel) {
-        /**
-         *  To make an actual update into the database.
-         */
+         // To make an actual update into the database.
         final String shoppingListId   = shoppingListModel.getShoppingListId();
-
         final String shoppingListName = shoppingListModel.getShoppingListName();
         final String productId = productModel.getProductId();
         final String productName      = productModel.getProductName();
@@ -65,9 +62,10 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 // move product between shopping and product list
                 Map<String, Object> map = new HashMap<>();
+                // we want the product to be moved to the product list section
                 if (izInShoppingList) {
                     map.put("izInShoppingList", false);
-                } else {
+                } else { // we want the product to be moved to the shopping list section
                     map.put("izInShoppingList", true);
                 }
                 // now we need to update the database
